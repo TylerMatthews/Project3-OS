@@ -1,8 +1,8 @@
-make: readwrite3.o
-	gcc -pthread readwrite3.o -o readwrite3
+make: project3_matthewsmonnik.o
+	gcc -pthread project3_matthewsmonnik.o -o project3_matthewsmonnik
 
-readwrite3.o: readwrite3.c
-	gcc -c readwrite3.c
+project3_matthewsmonnik.o: project3_matthewsmonnik.c
+	gcc -c project3_matthewsmonnik.c
 
 clean:
-	rm *.o readwrite3
+	rm *.o project3_matthewsmonnik
