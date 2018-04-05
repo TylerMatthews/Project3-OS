@@ -7,7 +7,8 @@
 //*************************************************************
 
 
-
+#include <stdint.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -15,8 +16,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#define NO_WRITERS	10
-#define NO_READERS	3
+#define NO_WRITERS	5
+#define NO_READERS	100
 
 int writecount = 0;
 sem_t sem1, rsem;
@@ -24,14 +25,14 @@ sem_t sem1, rsem;
 //writer
 void *writer(void *param) 
 {
-	int thread = (int)param;
+	int thread = (intptr_t)param;
 	srand(time(NULL));
 
 	while (1) 
 	{
 
 		//sleep before reading
-		usleep(thread * 3000000);
+		usleep(thread * 30000);
 
 		/// decrement writecount sem, update write count
 		sem_wait(&sem1);
@@ -44,9 +45,9 @@ void *writer(void *param)
 		sem_post(&sem1);
 
 		// display status's
-		printf("Reader %d is reading.\n", thread);
-		usleep(thread * 1500000);
-		printf("Reader %d done reading.\n", thread);
+		printf("Writer %d is writing.\n", thread);
+		usleep(thread * 15000);
+		printf("Writer %d done writing.\n", thread);
 
 		// decrement writer count sem, update writer count
 		sem_wait(&sem1);
@@ -67,22 +68,22 @@ void *writer(void *param)
 void *reader(void *param) 
 {
 
-	int thread = (int)param;
+	int thread = (intptr_t)param;
 	srand(time(NULL));
 
 	while (1) 
 	{
 		
 		// sleep before reading again
-		usleep(thread * 3000000);
+		usleep(thread * 30000);
 
 		// get reader
 		sem_wait(&rsem);
 
 	    //display status's
-		printf("Writer %d is Writing.\n", thread);
-		usleep(thread * 1500000);
-		printf("Writer %d done writing.\n", thread);
+		printf("Reader %d is reader.\n", thread);
+		usleep(thread * 10000);
+		printf("Reader %d done reading.\n", thread);
 
 		// release reader sem
 		sem_post(&rsem);
@@ -102,7 +103,7 @@ int main (int argc, char *argv[])
 	pthread_t tid;
 	pthread_attr_t attr;
 
-	/* Init semaphores */
+	
 	sem_init(&sem1, 0, 1);
 	sem_init(&rsem, 0, 1);
 
@@ -114,7 +115,7 @@ int main (int argc, char *argv[])
 	// creater writer threads
 	while (i < NO_WRITERS) 
 	{	
-		pthread_create(threads + i, &attr, writer, (void *)i + 1);
+		pthread_create(threads + i, &attr, writer, (void *)(intptr_t)i + 1);
 		i++;
 	}
 
@@ -123,7 +124,7 @@ int main (int argc, char *argv[])
 	//create reader threads
 	while (i < NO_READERS) 
 	{	
-		pthread_create(threads + i + NO_WRITERS, &attr, reader, (void *)i + 1);
+		pthread_create(threads + i + NO_WRITERS, &attr, reader, (void *)(intptr_t)i + 1);
 		i++;
 	}
 
