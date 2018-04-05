@@ -1,11 +1,3 @@
-//*************************************************************
-// Author: Tyler Matthews, Matthew Monnik
-// Date: 04/03/2018
-// Reader writer v2, writer preference 
-//
-//
-//*************************************************************
-
 
 #include <stdint.h>
 #include <inttypes.h>
@@ -31,30 +23,32 @@ void *writer(void *param)
 	while (1) 
 	{
 
-		//sleep before reading
-		usleep(thread * 30000);
+		//sleep before writing 
+		usleep(thread * 400000);
 
-		/// decrement writecount sem, update write count
+		// decrement writecount sem, update write count
 		sem_wait(&sem1);
 		writecount++;
 
-		// if its the first writer lock the read sempahore.
-		if (writecount == 1) sem_wait(&rsem);
+		// if its the first writer, lock the read sempahore.
+		if (writecount == 1) 
+			sem_wait(&rsem);
 
 		// release write sem
 		sem_post(&sem1);
 
 		// display status's
-		printf("Writer %d is writing.\n", thread);
-		usleep(thread * 15000);
-		printf("Writer %d done writing.\n", thread);
+		printf("Writer %d is writing.\n");
+		usleep(thread * 150000);
+		printf("Writer %d done writing.\n";
 
 		// decrement writer count sem, update writer count
 		sem_wait(&sem1);
 		writecount--;
 
-		// If last writers and no readers, release reader sem
-		if (writecount == 0) sem_post(&rsem);
+		// If this was the last writers and no readers, release reader sem
+		if (writecount == 0) 
+			sem_post(&rsem);
 
 		//release writer sem
 		sem_post(&sem1);
@@ -75,15 +69,15 @@ void *reader(void *param)
 	{
 		
 		// sleep before reading again
-		usleep(thread * 30000);
+		usleep(thread * 400000);
 
-		// get reader
+		// decrement readcount sem
 		sem_wait(&rsem);
 
 	    //display status's
-		printf("Reader %d is reader.\n", thread);
-		usleep(thread * 10000);
-		printf("Reader %d done reading.\n", thread);
+		printf("Reader %d is reader.\n");
+		usleep(thread * 150000);
+		printf("Reader %d done reading.\n");
 
 		// release reader sem
 		sem_post(&rsem);
@@ -93,7 +87,6 @@ void *reader(void *param)
 
 int main (int argc, char *argv[]) 
 {
-
 	printf("readwrite began with %d writers and %d readers.\n", NO_WRITERS,
 			NO_READERS);
 
