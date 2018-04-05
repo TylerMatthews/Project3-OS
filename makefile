@@ -1,7 +1,7 @@
-make: memsim.o
-	gcc readwrite3.o -o readwrite
+make: readwrite3.o
+	gcc readwrite3.o -o readwrite3
 
-memsim.o: readwrite3.c
+readwrite3.o: readwrite3.c
 	gcc -c readwrite3.c
 
 clean:
