@@ -6,3 +6,5 @@ To run with a different number of readers and writers, open the .c file and chan
 
 NO_WRITERS - to change the number of writers
 NO_READERS - to change the number of reads
+
+//secure message DES
